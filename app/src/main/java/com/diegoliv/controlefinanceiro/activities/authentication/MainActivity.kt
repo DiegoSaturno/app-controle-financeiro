@@ -57,17 +57,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun redirectToMainPage() {
-        startActivity(Intent(this@MainActivity, MainPageActivity::class.java))
+        var intent = Intent(this@MainActivity, MainPageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK shl Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        startActivity(intent)
     }
 
     private fun signIn(email: String, pwd: String) {
         auth.signInWithEmailAndPassword(email, pwd)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    var intent = Intent(this@MainActivity, MainPageActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK shl Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
-                    startActivity(intent)
+                    redirectToMainPage()
                 } else {
                     util.alertDialog("Atenção!", "Usuário e/ou senha incorretos.", this)
                         .show()
