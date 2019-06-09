@@ -1,4 +1,4 @@
-package com.diegoliv.appcontrolefinanceiro
+package com.diegoliv.controlefinanceiro
 
 import org.junit.Test
 
