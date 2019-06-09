@@ -10,6 +10,7 @@ import android.widget.EditText
 import com.diegoliv.controlefinanceiro.R
 import com.diegoliv.controlefinanceiro.activities.authentication.signup.SignUpActivity
 import com.diegoliv.controlefinanceiro.activities.main_page.MainPageActivity
+import com.diegoliv.controlefinanceiro.util.Utilities
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -18,12 +19,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var passwordText: EditText
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var util: Utilities
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
+
+        util = Utilities()
         val currentUser = auth.currentUser
         Log.d("User", currentUser.toString())
         if (currentUser == null) {
@@ -41,10 +45,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setSigninButtonOnClickListener() {
-        findViewById<Button>(R.id.login_button).setOnClickListener(View.OnClickListener {
-            var email = emailText.getText().toString()
-            Log.d("Teste", email)
-        })
+        findViewById<Button>(R.id.login_button).setOnClickListener {
+            signIn(util.getEditTextValue(emailText), util.getEditTextValue(passwordText))
+        }
     }
 
     private fun setSignupButtonOnClickListener() {
@@ -55,5 +58,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun redirectToMainPage() {
         startActivity(Intent(this@MainActivity, MainPageActivity::class.java))
+    }
+
+    private fun signIn(email: String, pwd: String) {
+        auth.signInWithEmailAndPassword(email, pwd)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    var intent = Intent(this@MainActivity, MainPageActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK shl Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+                    startActivity(intent)
+                } else {
+                    util.alertDialog("Atenção!", "Usuário e/ou senha incorretos.", this)
+                        .show()
+                }
+            }
     }
 }
