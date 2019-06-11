@@ -3,13 +3,11 @@ package com.diegoliv.controlefinanceiro.activities.authentication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import com.diegoliv.controlefinanceiro.R
 import com.diegoliv.controlefinanceiro.activities.authentication.signup.SignUpActivity
-import com.diegoliv.controlefinanceiro.activities.main_page.MainPageActivity
+import com.diegoliv.controlefinanceiro.activities.main_page.HomeActivity
 import com.diegoliv.controlefinanceiro.util.Utilities
 import com.google.firebase.auth.FirebaseAuth
 
@@ -26,10 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
-
         util = Utilities()
+        
         val currentUser = auth.currentUser
-        Log.d("User", currentUser.toString())
         if (currentUser == null) {
             setContentView(R.layout.activity_main)
 
@@ -39,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             setSigninButtonOnClickListener()
             setSignupButtonOnClickListener()
         } else {
-            redirectToMainPage()
+            redirectToHomePage()
         }
 
     }
@@ -56,8 +53,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun redirectToMainPage() {
-        var intent = Intent(this@MainActivity, MainPageActivity::class.java)
+    private fun redirectToHomePage() {
+        var intent = Intent(this@MainActivity, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK shl Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         startActivity(intent)
@@ -67,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pwd)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    redirectToMainPage()
+                    redirectToHomePage()
                 } else {
                     util.alertDialog("Atenção!", "Usuário e/ou senha incorretos.", this)
                         .show()
