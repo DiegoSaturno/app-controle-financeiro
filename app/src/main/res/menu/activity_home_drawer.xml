@@ -13,7 +13,7 @@
                 android:title="Transações"/>
     </group>
 
-    <item>
+    <item android:title="">
         <menu>
             <item
                     android:id="@+id/nav_signout"

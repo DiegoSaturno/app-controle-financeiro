@@ -8,4 +8,6 @@ data class Transaction (
     var isExpense: Boolean,
     var value: Double,
     var balanceBefore: Double,
-    var account_id: String)
+    var balanceAfter: Double,
+    var name: String,
+    var description: String?)

@@ -66,13 +66,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //super.onBackPressed()
             MaterialAlertDialogBuilder(this)
                 .setTitle("Deseja sair do aplicativo?")
-                .setPositiveButton("Sim", { dialog, which ->
+                .setPositiveButton("Sim") { _, _ ->
                     this.finishAffinity()
                     System.exit(1)
-                })
-                .setNegativeButton("Não", { dialog, which ->
+                }
+                .setNegativeButton("Não") { dialog, _ ->
                     dialog.cancel()
-                })
+                }
                 .show()
         }
     }
@@ -100,7 +100,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this@HomeActivity, SaveBalance::class.java))
             }
             R.id.nav_transactions -> {
-
+                startActivity(Intent(this@HomeActivity, TransactionHistoryActivity::class.java))
             }
             R.id.nav_signout -> {
                 auth.signOut()
