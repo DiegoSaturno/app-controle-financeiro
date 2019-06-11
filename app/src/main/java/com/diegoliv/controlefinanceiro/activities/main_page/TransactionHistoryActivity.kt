@@ -2,6 +2,7 @@ package com.diegoliv.controlefinanceiro.activities.main_page
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,14 +45,11 @@ class TransactionHistoryActivity : AppCompatActivity() {
                 .show()
         }
 
-        inflateRecyclerView()
+        inflateRecyclerViewWithMocks()
     }
 
     private fun inflateRecyclerView() {
         var userId = auth.currentUser!!.uid
-
-        val transactionRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-
 
         dbHelper
             .getOrderBy("transactions", "user_id", userId, "date")
@@ -63,7 +61,7 @@ class TransactionHistoryActivity : AppCompatActivity() {
                     val transactionDesc = document["description"].toString()
                     val balanceBefore = document["balanceBefore"].toString().toDouble()
                     val balanceAfter = document["balanceAfter"].toString().toDouble()
-                    val isExpense = document["balanceAfter"].toString().toBoolean()
+                    val isExpense = document["expense"].toString().toBoolean()
                     val date = SimpleDateFormat("dd/MM/yyyy").parse(document["data"].toString())
                     val value = document["value"].toString().toDouble()
 
@@ -71,9 +69,39 @@ class TransactionHistoryActivity : AppCompatActivity() {
                     transactions.add(Transaction(userId, date, isExpense, value, balanceBefore, balanceAfter, transactionName, transactionDesc))
                 }
 
-                transactionRecyclerView.adapter = TransactionsAdapter(this, transactions)
-                transactionRecyclerView.layoutManager = LinearLayoutManager(this)
+                setRecyclerViewAdapter(transactions)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Ex", exception.message)
             }
     }
 
+    private fun inflateRecyclerViewWithMocks() {
+        var userId = auth.currentUser!!.uid
+        val transactions = ArrayList<Transaction>()
+
+        for (i in 1..10) {
+            transactions.add(
+                Transaction(
+                    userId,
+                    Date(),
+                    true,
+                    10.00,
+                    100.00,
+                    90.00,
+                    "Compra $i",
+                    "Compra $i no Supermercado"
+                )
+            )
+        }
+
+        setRecyclerViewAdapter(transactions)
+    }
+
+    private fun setRecyclerViewAdapter(transactions: ArrayList<Transaction>) {
+        val transactionRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+
+        transactionRecyclerView.adapter = TransactionsAdapter(this, transactions)
+        transactionRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
 }

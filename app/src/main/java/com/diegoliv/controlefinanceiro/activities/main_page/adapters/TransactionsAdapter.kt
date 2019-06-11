@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.diegoliv.controlefinanceiro.R
 import com.diegoliv.controlefinanceiro.models.Transaction
+import java.text.SimpleDateFormat
+
 
 class TransactionsAdapter(private val context: Context, val transactions: List<Transaction>): RecyclerView.Adapter<TransactionsAdapter.TransactionViewHolder>() {
 
@@ -30,7 +32,9 @@ class TransactionsAdapter(private val context: Context, val transactions: List<T
         nameTextView.text = transaction.name
 
         val dataTextView = holder.itemView.findViewById<TextView>(R.id.dataTextView)
-        dataTextView.text = transaction.date.toString()
+
+        val newstring = SimpleDateFormat("dd/MM/yyyy").format(transaction.date)
+        dataTextView.text = newstring
 
         val valueTextView = holder.itemView.findViewById<TextView>(R.id.valueTextView)
         valueTextView.text = "R$ ${transaction.value}"
